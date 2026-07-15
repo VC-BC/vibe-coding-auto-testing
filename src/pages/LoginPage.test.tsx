@@ -77,7 +77,7 @@ describe('LoginPage', () => {
             await userEvent.type(screen.getByLabelText('密碼'), 'short');
             fireEvent.submit(screen.getByRole('button', { name: '登入' }));
 
-            expect(await screen.findByText('密碼必須至少 8 個字元跟日文dfbjwg')).toBeInTheDocument();
+            expect(await screen.findByText('密碼必須至少 8 個字元')).toBeInTheDocument();
         });
     });
 
