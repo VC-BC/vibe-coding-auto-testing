@@ -1,4 +1,4 @@
-﻿name: Automated Tests
+name: Automated Tests
 
 on:
   push:
@@ -29,11 +29,18 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
+      - name: Sanitize ref name
+        if: always()
+        run: |
+          REF_NAME="${{ github.head_ref || github.ref_name }}"
+          SAFE_REF=$(echo "$REF_NAME" | sed 's/[^a-zA-Z0-9._-]/-/g')
+          echo "SAFE_REF=$SAFE_REF" >> $GITHUB_ENV
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage-report-${{ github.ref_name }}-${{ github.run_number }}
+          name: coverage-report-${{ env.SAFE_REF }}-${{ github.run_number }}
           path: coverage/
           retention-days: 30
 
@@ -41,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: html-test-report-${{ github.ref_name }}-${{ github.run_number }}
+          name: html-test-report-${{ env.SAFE_REF }}-${{ github.run_number }}
           path: html-report/
           retention-days: 30
 
